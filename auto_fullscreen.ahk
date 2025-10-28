@@ -23,5 +23,4 @@ return
 PressEnter:
     Send, {Enter}
 return
-AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一次Enter保持全屏，再按一次Enter关闭。
-*/
+; AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一次Enter保持全屏，再按一次Enter关闭。
