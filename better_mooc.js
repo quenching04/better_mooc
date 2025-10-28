@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name 更好的慕课better_mooc
-// @namespace http://tampermonkey.net/
-// @version 1.00
+// @namespace https://github.com/quenching04/better_mooc
+// @version 1.0_20251028
 // @description 解除右键禁用、任意倍速播放、跳过开头秒数、跳过结尾秒数、画中画播放、快捷键功能
 // @author quenching
 // @match http*://www.icourse163.org/learn/*
@@ -177,7 +177,7 @@ AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一
                         };
                         // 使用说明按钮
                         document.querySelector("#HelpBtn").onclick = function() {
-                            alert("快捷键\n空格：播放/暂停（阻止页面滚动）\n回车：全屏\n→键：快进5秒\n←键：后退5秒\n1或Z：1倍速\nX键：减速0.1x\nC键：加速0.1x\n2：2倍速\n3：3倍速\n4：4倍速");
+                            alert("快捷键（某些执行环境下可能失效）\n空格：播放/暂停（阻止页面滚动）\n回车：全屏\n→键：快进5秒\n←键：后退5秒\n1或Z：1倍速\nX键：减速0.1x\nC键：加速0.1x\n2：2倍速\n3：3倍速\n4：4倍速");
                             alert("默认倍速为1x\n默认跳过开头时间为20s\n默认跳过结尾时间为8s\n以上更改后会保存在cookies\n跳过开头和结尾时间修改后需要刷新页面生效\n\n已解除右键禁用和按键屏蔽\n已删除慕课自带的倍速按钮\n\n不能和Youtube一样自动播放仍保持全屏的原因和浏览器外的解决办法详见脚本代码，有问题请在Github联系quenching04")
                         }
 
@@ -231,7 +231,7 @@ AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一
                                 case 50: video.playbackRate = 2; break;                                             // 2：2倍速
                                 case 51: video.playbackRate = 3; break;                                             // 3：3倍速
                                 case 52: video.playbackRate = 4; break;                                             // 4：4倍速
-                                default: return e;
+                                默认: return e;
                             }
                             GM_setValue('speed', video.playbackRate);
                             show(video.playbackRate);
