@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name 更好的慕课better_mooc
 // @namespace https://github.com/quenching04/better_mooc
-// @version 1.0_20251031
+// @version 1.1_20251031
 // @description 解除右键禁用、任意倍速播放、跳过开头秒数、跳过结尾秒数、画中画播放、快捷键功能
 // @author quenching
 // @match http*://www.icourse163.org/learn/*
