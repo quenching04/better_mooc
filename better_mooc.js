@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name 更好的慕课better_mooc
 // @namespace https://github.com/quenching04/better_mooc
-// @version 1.1_20251031
+// @version 1.2_20251102
 // @description 解除右键禁用、任意倍速播放、跳过开头秒数、跳过结尾秒数、画中画播放、快捷键功能
 // @author quenching
 // @match http*://www.icourse163.org/learn/*
@@ -14,33 +14,40 @@
 /*
 1.在以下油猴脚本的基础上修改而来，向原作者kakasearch表示感谢：https://greasyfork.org/zh-CN/scripts/411079-%E4%B8%AD%E5%9B%BD%E5%A4%A7%E5%AD%A6mooc-%E5%80%8D%E9%80%9F%E6%92%AD%E6%94%BE-%E8%B7%B3%E8%BF%87%E7%89%87%E5%A4%B4-%E7%94%BB%E4%B8%AD%E7%94%BB%E6%92%AD%E6%94%BE
 2.不能和Youtube一样自动播放仍保持全屏的原因：https://stackoverflow.com/questions/66030076/how-to-persist-fullscreen-mode-in-browser-with-autoplay-like-youtube-playlist-do
-3.想要自动播放后仍保持全屏可以下载AutoHotkey-v1.0软件来模拟持续输全屏快捷键（Enter），AutoHotkey脚本如下：
+3.想要自动播放后仍保持全屏可以下载AutoHotkey-v1.0软件来模拟持续输全屏快捷键（F键），AutoHotkey脚本如下：
 #Persistent
 #SingleInstance Force
-toggle := false    ; 开关变量（false=停止, true=运行）
+
+toggle := false                     ; 开关变量（false=停止, true=运行）
+
 ; =====================================================
-; 当按下 Enter 时，仅在指定浏览器窗口生效
+; 当按下F键时，仅在指定浏览器窗口生效
 ; =====================================================
-Enter::
-    ; 判断当前活动窗口是否是浏览器
-    if WinActive("ahk_exe chrome.exe") or WinActive("ahk_exe msedge.exe") or WinActive("ahk_exe firefox.exe")
-    {
-        toggle := !toggle             ; 每次按下 Enter 切换状态
-        if (toggle) {
-            SetTimer, PressEnter, 1000   ; 开启定时器，每隔1秒执行一次
-        } else {
-            SetTimer, PressEnter, Off    ; 停止定时器
-        }
+#If ( WinActive("ahk_exe chrome.exe") || WinActive("ahk_exe msedge.exe") || WinActive("ahk_exe firefox.exe") )
+F::
+    toggle := !toggle               ; 每次按下 Enter 切换状态
+    if toggle{
+        SetTimer, PressKey, 1000    ; 每隔1秒执行一次PressKey函数，自动按键
+        Tooltip, Auto-Press started ; 弹窗提示自动按键已开启
+        SetTimer, RemoveTip, -1000  ; 1s后执行RemoveTip函数，关闭弹窗
+    }
+    else{
+        SetTimer, PressKey, Off     ; 关闭自动按键
+        Tooltip, Auto-Press stopped ; 弹窗提示自动按键已关闭
+        SetTimer, RemoveTip, -1000  ; 1s后执行RemoveTip函数，关闭弹窗
     }
 return
-; =====================================================
-; 定时执行函数：模拟按下 Enter 键
-; =====================================================
-PressEnter:
-    Send, {Enter}
+
+PressKey:                           ; 函数PressKey函数功能：按F键
+    SendInput F
 return
-AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一次Enter保持全屏，再按一次Enter关闭。
+
+RemoveTip:                          ; 函数RemoveTip功能：关闭弹窗
+    Tooltip
+return
+; AutoHotkey脚本如上为止，效果为按一次F键后每隔1s模拟输入一次F键保持全屏，再按一次F键关闭。（仅在指定浏览器窗口生效）
 */
+
 
 (function() {
     'use strict';
@@ -177,7 +184,7 @@ AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一
                         };
                         // 使用说明按钮
                         document.querySelector("#HelpBtn").onclick = function() {
-                            alert("快捷键（若失效，请在倍速栏输入任意速度后点击空白处再试）\n空格：播放/暂停（阻止页面滚动）\n回车：全屏\n→键：快进5秒\n←键：后退5秒\n1或Z：1倍速\nX键：减速0.1x\nC键：加速0.1x\n2：2倍速\n3：3倍速\n4：4倍速");
+                            alert("快捷键（若失效，请在倍速栏输入任意速度后点击空白处再试）\n空格：播放/暂停（阻止页面滚动）\nF键：全屏\n→键：快进5秒\n←键：后退5秒\n1或Z：1倍速\nX键：减速0.1x\nC键：加速0.1x\n2：2倍速\n3：3倍速\n4：4倍速");
                             alert("默认倍速为1x\n默认跳过开头时间为20s\n默认跳过结尾时间为8s\n以上更改后会保存在cookies\n跳过开头和结尾时间修改后需要刷新页面生效\n\n已解除右键禁用和按键屏蔽\n已删除慕课自带的倍速按钮\n\n不能和Youtube一样自动播放仍保持全屏的原因和浏览器外的解决办法详见脚本代码，有问题请在Github联系quenching04")
                         }
 
@@ -222,7 +229,7 @@ AutoHotkey脚本如上为止，效果为按一次Enter后每隔1s模拟输入一
                             let video = document.getElementsByTagName('video')[0];
                             switch (e.keyCode) {
                                 case 32: e.preventDefault(); video.paused ? video.play() : video.pause(); break;    // 空格：播放/暂停（阻止页面滚动）
-                                case 13: FullScreen(); break;                                                       // 回车：全屏
+                                case 70: FullScreen(); break;                                                       // F键：全屏
                                 case 39: video.currentTime += 5; break;                                             // →键：快进5秒
                                 case 37: video.currentTime -= 5; break;                                             // ←键：后退5秒
                                 case 49: case 90: video.playbackRate = 1; break;                                    // 1 或 Z：1倍速
