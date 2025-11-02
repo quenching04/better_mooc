@@ -5,4 +5,4 @@
 
 2.不能和Youtube一样自动播放仍保持全屏的原因：https://stackoverflow.com/questions/66030076/how-to-persist-fullscreen-mode-in-browser-with-autoplay-like-youtube-playlist-do
 
-3.想要自动播放后仍保持全屏可以下载AutoHotkey-v1.0软件来模拟持续输全屏快捷键（Enter），具体方法见[auto_fullscreen.ahk](auto_fullscreen.ahk)
+3.想要自动播放后仍保持全屏可以下载AutoHotkey-v1.0软件来模拟持续输全屏快捷键，具体方法见[auto_fullscreen.ahk](auto_fullscreen.ahk)
